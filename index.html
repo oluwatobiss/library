@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Library</title>
+        <link href="https://fonts.googleapis.com/css2?family=PT+Sans&family=Oswald&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body>
+        <section id="control-panel">
+            <h1>My Library</h1>
+            <fieldset>
+                <legend>Add a Book</legend>
+                <form>
+                    <label for="book-title">Book Title</label>
+                    <input type="text" id="book-title" class="book-info" name="title">
+                    <label for="author">Author's Name</label>
+                    <input type="text" id="author" class="book-info" name="author">
+                    <label for="number-of-pages">Number of Pages</label>
+                    <input type="number" id="number-of-pages" class="book-info" min="1" placeholder="72" name="pages">
+                </form>
+                <div id="read-status">
+                    <button id="not-read">Not Read</button>
+                    <button id="reading">Reading</button>
+                    <button id="read">Read</button>
+                </div>
+                <button id="add-book">Add Book</button>
+            </fieldset>
+            <div id="record-keeper">
+                <div id="total-books">
+                    <p>TOTAL ADDED</p>
+                    <div>0</div>
+                </div>
+            </div>
+            <form role="search">
+                <input type="search" id="search" name="search" 
+                placeholder="&#xf002; Search Library..." aria-label="Find a book in the library">
+            </form>
+            <button id="delete-all">Delete All Books</button>
+            <footer><a href="https://github.com/oluwatobiss" target="_blank">Created by Oluwatobi Sofela <i class="fa fa-github"></i></a></footer>
+        </section>
+        <section id="shelf">
+            <div id="unread-logged-book">
+                <div id="book-info">
+                    <p id="logged-title">Special Title</p>
+                    <p id="logged-author">Good Author</p>
+                    <p id="logged-pages">108 pages</p>
+                </div>
+                <div id="logged-read-status">
+                    <button id="not-read">Not Read</button>
+                    <button id="reading">Reading</button>
+                    <button id="read">Read</button>
+                </div>
+                <button id="delete-book"><i class="fas fa-trash-alt"></i></button>
+            </div>
+            <div id="reading-logged-book">
+                <div id="book-info">
+                    <p id="logged-title">Special Title</p>
+                    <p id="logged-author">Good Author</p>
+                    <p id="logged-pages">108 pages</p>
+                </div>
+                <div id="logged-read-status">
+                    <button id="not-read">Not Read</button>
+                    <button id="reading">Reading</button>
+                    <button id="read">Read</button>
+                </div>
+                <button id="delete-book"><i class="fas fa-trash-alt"></i></button>
+            </div>
+            <div id="read-logged-book">
+                <div id="book-info">
+                    <p id="logged-title">Special Title</p>
+                    <p id="logged-author">Good Author</p>
+                    <p id="logged-pages">108 pages</p>
+                </div>
+                <div id="logged-read-status">
+                    <button id="not-read">Not Read</button>
+                    <button id="reading">Reading</button>
+                    <button id="read">Read</button>
+                </div>
+                <button id="delete-book"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </section>
+        <script src="script.js"></script>
+        <script src="https://kit.fontawesome.com/465e3a1049.js" crossorigin="anonymous"></script>
+    </body>
+</html>

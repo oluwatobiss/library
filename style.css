@@ -1,0 +1,259 @@
+@font-face {
+    font-family: 'digital-7';
+    src: url('assets/fonts/digital-7.regular.ttf');
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: 'PT Sans', sans-serif;
+    background-color: #7e5735;
+}
+
+#shelf {
+    display: flex;
+    flex-direction: column;
+    margin-left: 300px;
+    padding: 50px 10px;
+    height: 100%;
+}
+
+#unread-logged-book, #reading-logged-book, #read-logged-book {
+    margin: 0 auto;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 60% 30% 10%;
+    align-items: center;
+    box-sizing: border-box;
+    width: 80%;
+    height: 130px;
+}
+
+#unread-logged-book {
+    background-color: #a6d608;
+    box-shadow: 3px 4px 15px;
+}
+
+#reading-logged-book {
+    background-color: #9955bb;
+    box-shadow: 3px 4px 15px;
+}
+
+#read-logged-book {
+    background-color: #006400;
+    box-shadow: 3px 4px 15px;
+}
+
+#book-info {
+    font-family: 'Source Serif Pro', serif;
+}
+
+#logged-title {
+    margin: 0;
+    font-size: 2rem;
+    color: #1a1a1a;
+}
+
+#logged-author, #logged-pages {
+    margin: 3px 0;
+    font-size: 1rem;
+}
+
+#logged-read-status {
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#delete-book {
+    width: 70%;
+    height: 70%;
+    color: #1a1a1a;
+    background-color: #cccccc;
+    border: 1px groove #b3b3b3;
+    border-radius: 3px;
+    margin: auto;
+    font-size: 20px;
+}
+
+#delete-book:hover {
+    background-color: #a52a2a;
+    border: 1px groove #7a1f1f;
+    color: #cccccc;
+}
+
+#control-panel {
+    box-sizing: border-box;
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color:#24190f;
+    padding: 10px 20px;
+}
+
+h1 {
+    margin-top: 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 29px;
+    text-align: center;
+}
+
+h1, legend, label {
+    color:#7e5735;
+}
+
+fieldset, legend {
+    border: 2px groove #48321e;
+}
+
+fieldset, #book-title, #author, #number-of-pages, #add-book, #record-keeper, #search, #delete-all {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+legend {
+    margin: 0 auto;
+    padding: 3px 8px;
+    font-size: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+}
+
+input {
+    padding: 0 5px;
+    background-color: #e1cbb7;
+    color: #1a1a1a;
+    font-family: FontAwesome, 'PT Sans', sans-serif;
+}
+
+input, #add-book, #delete-all {
+    height: 28px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+
+input:focus, button:focus {
+    outline:0;
+}
+
+button {
+    border: 3px groove #48321e;
+    padding: 3px;
+    background-color: #7e5735;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 13px;
+    color: #120c08;
+    cursor: pointer;
+}
+
+button:active {
+    box-shadow: inset 0 0.6em 2em -0.3em rgba(0,0,0,0.25), inset 0 0 0em 0.05em rgba(255,255,255,0.12);
+}
+
+#add-book, #delete-all {
+    height: 50px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+#add-book:hover {
+    background-color: #8b4513;
+    color: #fcf1e9;
+}
+
+#delete-all:hover {
+	background-color: #a52a2a;
+	color: #faebeb;
+}
+
+#read-status {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#read, #not-read, #reading {
+    width: 60px;
+    height: 60px;
+}
+
+#read {
+    border-radius: 50%;
+}
+
+#reading {
+    border-radius: 50% 0;
+}
+
+#not-read:hover {
+    background-color: #a6d608;
+    color: #1a1a1a;
+    font-weight: bold;
+}
+
+#reading:hover {
+    background-color: #9955bb;
+    color: #1a1a1a;
+    font-weight: bold;
+}
+
+#read:hover {
+    background-color: #006400;
+    color: #1a1a1a;
+    font-weight: bold;
+}
+
+#record-keeper {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    background-color: rgb(203, 203, 203);
+    border: 2px solid rgb(63, 63, 63);
+}
+
+#total-books {
+    margin: 1em auto;
+    padding: 1rem 1rem;
+    border-radius: 5px;
+    background: linear-gradient(#c6d3c2, #c6d1c0);
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.4);
+    text-align: center;
+    width: 70px;
+    height: 70px;
+}
+
+#total-books p {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+}
+
+#total-books div {
+    font-family: 'digital-7';
+    font-size: 3rem;
+}
+
+footer {
+	text-align: center;
+}
+
+footer a {
+    text-decoration: none;
+    color:#7e5735;
+}
+
+footer a:hover {
+    color: #8b4513;
+}
