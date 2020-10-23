@@ -11,20 +11,20 @@
             <h1>My Library</h1>
             <fieldset>
                 <legend>Add a Book</legend>
-                <form>
+                <form id="about-book">
                     <label for="book-title">Book Title</label>
-                    <input type="text" id="book-title" class="book-info" name="title">
+                    <input type="text" id="book-title" class="book-added-info" name="title" required>
                     <label for="author">Author's Name</label>
-                    <input type="text" id="author" class="book-info" name="author">
+                    <input type="text" id="author" class="book-added-info" name="author" required>
                     <label for="number-of-pages">Number of Pages</label>
-                    <input type="number" id="number-of-pages" class="book-info" min="1" placeholder="72" name="pages">
+                    <input type="number" id="number-of-pages" class="book-added-info" min="1" placeholder="72" name="pages" required>
                 </form>
                 <div id="read-status">
-                    <button id="not-read">Not Read</button>
-                    <button id="reading">Reading</button>
-                    <button id="read">Read</button>
+                    <button type="button" class="add-read-state not-read">Not Read</button>
+                    <button type="button" class="add-read-state reading">Reading</button>
+                    <button type="button" class="add-read-state read">Read</button>
                 </div>
-                <button id="add-book">Add Book</button>
+                <button type="submit" form="about-book" id="add-book">Add Book</button>
             </fieldset>
             <div id="record-keeper">
                 <div id="total-books">
@@ -36,48 +36,48 @@
                 <input type="search" id="search" name="search" 
                 placeholder="&#xf002; Search Library..." aria-label="Find a book in the library">
             </form>
-            <button id="delete-all">Delete All Books</button>
+            <button type="button" id="delete-all">Delete All Books</button>
             <footer><a href="https://github.com/oluwatobiss" target="_blank">Created by Oluwatobi Sofela <i class="fa fa-github"></i></a></footer>
         </section>
         <section id="shelf">
-            <div id="unread-logged-book">
-                <div id="book-info">
-                    <p id="logged-title">Special Title</p>
-                    <p id="logged-author">Good Author</p>
-                    <p id="logged-pages">108 pages</p>
+            <div class="bk unread-logged-book">
+                <div class="book-info">
+                    <p class="logged-title">Special Title</p>
+                    <p class="logged-author">Good Author</p>
+                    <p class="logged-pages">108 pages</p>
                 </div>
-                <div id="logged-read-status">
-                    <button id="not-read">Not Read</button>
-                    <button id="reading">Reading</button>
-                    <button id="read">Read</button>
+                <div class="logged-read-status">
+                    <button type="button" class="not-read">Not Read</button>
+                    <button type="button" class="reading">Reading</button>
+                    <button type="button" class="read">Read</button>
                 </div>
-                <button id="delete-book"><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="delete-book"><i class="fas fa-trash-alt"></i></button>
             </div>
-            <div id="reading-logged-book">
-                <div id="book-info">
-                    <p id="logged-title">Special Title</p>
-                    <p id="logged-author">Good Author</p>
-                    <p id="logged-pages">108 pages</p>
+            <div class="bk reading-logged-book">
+                <div class="book-info">
+                    <p class="logged-title">Special Title</p>
+                    <p class="logged-author">Good Author</p>
+                    <p class="logged-pages">108 pages</p>
                 </div>
-                <div id="logged-read-status">
-                    <button id="not-read">Not Read</button>
-                    <button id="reading">Reading</button>
-                    <button id="read">Read</button>
+                <div class="logged-read-status">
+                    <button type="button" class="not-read">Not Read</button>
+                    <button type="button" class="reading">Reading</button>
+                    <button type="button" class="read">Read</button>
                 </div>
-                <button id="delete-book"><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="delete-book"><i class="fas fa-trash-alt"></i></button>
             </div>
-            <div id="read-logged-book">
-                <div id="book-info">
-                    <p id="logged-title">Special Title</p>
-                    <p id="logged-author">Good Author</p>
-                    <p id="logged-pages">108 pages</p>
+            <div class="bk read-logged-book">
+                <div class="book-info">
+                    <p class="logged-title">Special Title</p>
+                    <p class="logged-author">Good Author</p>
+                    <p class="logged-pages">108 pages</p>
                 </div>
-                <div id="logged-read-status">
-                    <button id="not-read">Not Read</button>
-                    <button id="reading">Reading</button>
-                    <button id="read">Read</button>
+                <div class="logged-read-status">
+                    <button type="button" class="not-read">Not Read</button>
+                    <button type="button" class="reading">Reading</button>
+                    <button type="button" class="read">Read</button>
                 </div>
-                <button id="delete-book"><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="delete-book"><i class="fas fa-trash-alt"></i></button>
             </div>
         </section>
         <script src="script.js"></script>

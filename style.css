@@ -23,7 +23,7 @@ body {
     height: 100%;
 }
 
-#unread-logged-book, #reading-logged-book, #read-logged-book {
+.unread-logged-book, .reading-logged-book, .read-logged-book {
     margin: 0 auto;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -36,43 +36,43 @@ body {
     height: 130px;
 }
 
-#unread-logged-book {
+.unread-logged-book {
     background-color: #a6d608;
     box-shadow: 3px 4px 15px;
 }
 
-#reading-logged-book {
+.reading-logged-book {
     background-color: #9955bb;
     box-shadow: 3px 4px 15px;
 }
 
-#read-logged-book {
+.read-logged-book {
     background-color: #006400;
     box-shadow: 3px 4px 15px;
 }
 
-#book-info {
+.book-info {
     font-family: 'Source Serif Pro', serif;
 }
 
-#logged-title {
+.logged-title {
     margin: 0;
     font-size: 2rem;
     color: #1a1a1a;
 }
 
-#logged-author, #logged-pages {
+.logged-author, .logged-pages {
     margin: 3px 0;
     font-size: 1rem;
 }
 
-#logged-read-status {
+.logged-read-status {
     padding: 0 10px;
     display: flex;
     justify-content: space-between;
 }
 
-#delete-book {
+.delete-book {
     width: 70%;
     height: 70%;
     color: #1a1a1a;
@@ -83,7 +83,7 @@ body {
     font-size: 20px;
 }
 
-#delete-book:hover {
+.delete-book:hover {
     background-color: #a52a2a;
     border: 1px groove #7a1f1f;
     color: #cccccc;
@@ -184,32 +184,32 @@ button:active {
     margin-bottom: 20px;
 }
 
-#read, #not-read, #reading {
+.read, .not-read, .reading {
     width: 60px;
     height: 60px;
 }
 
-#read {
+.read {
     border-radius: 50%;
 }
 
-#reading {
+.reading {
     border-radius: 50% 0;
 }
 
-#not-read:hover {
+.not-read:hover {
     background-color: #a6d608;
     color: #1a1a1a;
     font-weight: bold;
 }
 
-#reading:hover {
+.reading:hover {
     background-color: #9955bb;
     color: #1a1a1a;
     font-weight: bold;
 }
 
-#read:hover {
+.read:hover {
     background-color: #006400;
     color: #1a1a1a;
     font-weight: bold;
