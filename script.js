@@ -6,6 +6,11 @@ const addBook = document.getElementById("add-book");
 const numberOfBooks = document.getElementById("numb-of-bks");
 const shelf = document.getElementById("shelf");
 const deleteAllBtn = document.getElementById("delete-all");
+const deleteAllBtnModalBg = document.getElementById("del-all-modal-bg");
+const deleteAllConfirmationText = document.getElementById("del-all-conf-text");
+const closeModalBtn = document.getElementById("close-modal");
+const deleteAllOkayBtn = document.getElementById("delete-all-okay");
+const cancelDelAllReqBtn = document.getElementById("cancel-del-all-request");
 const title = bookAddedInfo[0];
 const author = bookAddedInfo[1];
 const pages = bookAddedInfo[2];
@@ -14,8 +19,30 @@ let read = "";
 
 addReadState.forEach(i => i.addEventListener("click", logReadStatus));
 addBook.addEventListener("click", addBookToLibrary);
-deleteAllBtn.addEventListener("click", deleteAllBooks);
+deleteAllBtn.addEventListener("click", confirmDelAllRequest);
+window.addEventListener("click", closeDelAllModalBox);
+deleteAllOkayBtn.addEventListener("click", deleteAllBooks);
 searchForm.addEventListener("keyup", searchForBook);
+
+function closeDelAllModalBox(objClicked) {
+    if(objClicked.target === deleteAllBtnModalBg || objClicked.target === closeModalBtn || objClicked.target === cancelDelAllReqBtn) {
+        deleteAllBtnModalBg.style.display = "none";
+    }
+}
+
+function confirmDelAllRequest() {
+    if(shelf.children.length === 0) return;
+    deleteAllConfirmationText.innerText = `Are you sure you want to delete all ${shelf.children.length} books from your Library?`;
+    deleteAllBtnModalBg.style.display = "block";
+}
+
+function deleteAllBooks() {
+    while(shelf.firstChild) {
+        shelf.firstChild.remove();
+    }
+    numberOfBooks.innerText = shelf.children.length;
+    deleteAllBtnModalBg.style.display = "none";
+}
 
 function searchForBook() {
     const searchValue = searchForm.value.toLowerCase();
@@ -194,15 +221,4 @@ function showReadStatus() {
 function removeBookDiv() {
     shelf.removeChild(this.parentNode);
     numberOfBooks.innerText = shelf.children.length;
-}
-
-function deleteAllBooks() {
-    if(shelf.children.length === 0) return;
-
-    if(confirm(`Are you sure you want to delete all ${shelf.children.length} books from your Library?`)) {
-        while(shelf.firstChild) {
-            shelf.firstChild.remove();
-        }
-        numberOfBooks.innerText = shelf.children.length;
-    }
 }

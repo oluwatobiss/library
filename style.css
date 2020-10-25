@@ -15,6 +15,89 @@ body {
     background-color: #7e5735;
 }
 
+#del-all-modal-bg {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    overflow: auto;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Preferred color */
+}
+
+#del-all-modal-box {
+    position: relative;
+    background-color: #ffffff;
+    margin: 15% auto;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    padding: 0;
+    width: 35%;
+    animation-name: animate-del-all-modal-box;
+    animation-duration: 1s;
+}
+
+@keyframes animate-del-all-modal-box {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+#del-all-modal-box header {
+    padding: 0.5px 20px;
+    background-color: #7e5735;
+    color: #ffffff;
+}
+
+#close-modal {
+    color: #ffffff;
+    float: right;
+    font-size: 35px;
+  }
+
+#close-modal:hover {
+  color: #24190f;
+  cursor: pointer;
+}
+
+#del-all-modal-box-body {
+    padding: 2px 55px 28px;
+}
+
+.del-all-modal-btn {
+    border: 1px solid #7e5735;
+    border-radius: 2px;
+    padding: 8px 20px;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1rem;
+}
+
+#delete-all-okay {
+    margin-right: 5px;
+    background-color: #7e5735;
+    color: #ffffff;
+}
+
+#delete-all-okay:hover {
+    background-color:  #24190f;
+}
+
+#cancel-del-all-request {
+    background-color: #ffffff;
+    color: #7e5735;
+}
+
+#cancel-del-all-request:hover {
+    border: 1px solid #24190f;
+    color: #24190f;
+}
+
+#del-all-modal-box footer {
+    padding: 30px 16px;
+    background-color: #7e5735;
+}
+
 #shelf {
     display: flex;
     flex-direction: column;
