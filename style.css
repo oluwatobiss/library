@@ -25,14 +25,14 @@ body {
     top: 0;
     overflow: auto;
     background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Preferred color */
+    background-color: rgba(0,0,0,0.55); /* Preferred color */
 }
 
 #del-all-modal-box {
     position: relative;
     background-color: #ffffff;
     margin: 15% auto;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5), 0 6px 20px 0 rgba(0,0,0,0.3);
     padding: 0;
     width: 35%;
     animation-name: animate-del-all-modal-box;

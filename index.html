@@ -7,6 +7,35 @@
         <link href="style.css" rel="stylesheet">
     </head>
     <body>
+        <section id="control-panel">
+            <h1>My Library</h1>
+            <fieldset>
+                <legend>Add a Book</legend>
+                <form>
+                    <label for="book-title">Book Title</label>
+                    <input type="text" id="book-title" class="book-added-info">
+                    <label for="author">Author's Name</label>
+                    <input type="text" id="author" class="book-added-info">
+                    <label for="number-of-pages">Number of Pages</label>
+                    <input type="number" id="number-of-pages" class="book-added-info" min="1" placeholder="72">
+                </form>
+                <div id="read-status">
+                    <button type="button" class="add-read-state not-read">Not Read</button>
+                    <button type="button" class="add-read-state reading">Reading</button>
+                    <button type="button" class="add-read-state read">Read</button>
+                </div>
+                <button type="button" id="add-book">Add Book</button>
+            </fieldset>
+            <div id="record-keeper">
+                <div id="total-books">
+                    <p>TOTAL BOOKS</p>
+                    <div id="numb-of-bks">0</div>
+                </div>
+            </div>
+            <input type="search" id="search" placeholder="&#xf002; Search Library by Title..." aria-label="Find a book in the library">
+            <button type="button" id="delete-all">Delete All Books</button>
+            <footer><a href="https://github.com/oluwatobiss" target="_blank">Created by Oluwatobi Sofela <i class="fa fa-github"></i></a></footer>
+        </section>
         <section id="del-all-modal-bg">
             <div id="del-all-modal-box">
                 <header>
@@ -23,76 +52,7 @@
                 <footer></footer>
             </div>
         </section>
-        <section id="control-panel">
-            <h1>My Library</h1>
-            <fieldset>
-                <legend>Add a Book</legend>
-                <form id="about-book">
-                    <label for="book-title">Book Title</label>
-                    <input type="text" id="book-title" class="book-added-info" required>
-                    <label for="author">Author's Name</label>
-                    <input type="text" id="author" class="book-added-info" required>
-                    <label for="number-of-pages">Number of Pages</label>
-                    <input type="number" id="number-of-pages" class="book-added-info" min="1" placeholder="72" required>
-                </form>
-                <div id="read-status">
-                    <button type="button" class="add-read-state not-read">Not Read</button>
-                    <button type="button" class="add-read-state reading">Reading</button>
-                    <button type="button" class="add-read-state read">Read</button>
-                </div>
-                <button type="submit" form="about-book" id="add-book">Add Book</button>
-            </fieldset>
-            <div id="record-keeper">
-                <div id="total-books">
-                    <p>TOTAL BOOKS</p>
-                    <div id="numb-of-bks">0</div>
-                </div>
-            </div>
-            <input type="search" id="search" placeholder="&#xf002; Search Library..." aria-label="Find a book in the library">
-            <button type="button" id="delete-all">Delete All Books</button>
-            <footer><a href="https://github.com/oluwatobiss" target="_blank">Created by Oluwatobi Sofela <i class="fa fa-github"></i></a></footer>
-        </section>
-        <section id="shelf">
-            <div class="unread-logged-book">
-                <div class="book-info">
-                    <p class="logged-title">Special Title</p>
-                    <p class="logged-author">Good Author</p>
-                    <p class="logged-pages">108 pages</p>
-                </div>
-                <div class="logged-read-status">
-                    <button type="button" class="status-btn not-read">Not Read</button>
-                    <button type="button" class="status-btn reading">Reading</button>
-                    <button type="button" class="status-btn read">Read</button>
-                </div>
-                <button type="button" class="delete-book"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="reading-logged-book">
-                <div class="book-info">
-                    <p class="logged-title">Special Title</p>
-                    <p class="logged-author">Good Author</p>
-                    <p class="logged-pages">108 pages</p>
-                </div>
-                <div class="logged-read-status">
-                    <button type="button" class="status-btn not-read">Not Read</button>
-                    <button type="button" class="status-btn reading">Reading</button>
-                    <button type="button" class="status-btn read">Read</button>
-                </div>
-                <button type="button" class="delete-book"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="read-logged-book">
-                <div class="book-info">
-                    <p class="logged-title">Special Title</p>
-                    <p class="logged-author">Good Author</p>
-                    <p class="logged-pages">108 pages</p>
-                </div>
-                <div class="logged-read-status">
-                    <button type="button" class="status-btn not-read">Not Read</button>
-                    <button type="button" class="status-btn reading">Reading</button>
-                    <button type="button" class="status-btn read">Read</button>
-                </div>
-                <button type="button" class="delete-book"><i class="fas fa-trash-alt"></i></button>
-            </div>
-        </section>
+        <section id="shelf"></section>
         <script src="script.js"></script>
         <script src="https://kit.fontawesome.com/465e3a1049.js" crossorigin="anonymous"></script>
     </body>
