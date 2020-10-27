@@ -15,8 +15,9 @@ const cancelDelAllReqBtn = document.getElementById("cancel-del-all-request");
 const title = bookAddedInfo[0];
 const author = bookAddedInfo[1];
 const pages = bookAddedInfo[2];
-let rStatus = "";
+let allTitles = [];
 let bookInfoObj = {};
+let rStatus = "";
 
 // localStorage.clear();
 
@@ -30,9 +31,17 @@ deleteAllOkayBtn.addEventListener("click", deleteAllBooks);
 
 function checkLocalStorage() {
     if(localStorage.length > 0) {
-        for(let i = 0; i < localStorage.length; i++){
-            const keyOfBook = localStorage.key(i);
-            const bookFromLocalStorage = localStorage.getItem(keyOfBook);
+        const titlesArrFromLocStor = localStorage.getItem("allBooksTitle");
+        const turnJSONTitArrToJSTitArr = JSON.parse(titlesArrFromLocStor);
+        
+        allTitles = [...turnJSONTitArrToJSTitArr];
+        
+        turnJSONTitArrToJSTitArr.reverse();
+
+        console.log(turnJSONTitArrToJSTitArr);
+
+        for(let val of turnJSONTitArrToJSTitArr) {
+            const bookFromLocalStorage = localStorage.getItem(val);
             const turnJSONBookToJSBook = JSON.parse(bookFromLocalStorage);
             console.log(turnJSONBookToJSBook);
             addBookToLibrary(turnJSONBookToJSBook);
@@ -53,10 +62,15 @@ function createBookInfoObj() {
             return;
         }
     }
+
     bookInfoObj = bookData;
-    console.log(bookInfoObj.title);
+    allTitles.unshift(bookInfoObj.title);
+
     // Store book's data into the Local-Storage:
     console.log(JSON.stringify(bookInfoObj));
+    console.log(JSON.stringify(allTitles));
+
+    localStorage.setItem("allBooksTitle", JSON.stringify(allTitles));
     localStorage.setItem(bookInfoObj.title, JSON.stringify(bookInfoObj));
     // Add book to Library's shelf:
     addBookToLibrary(bookInfoObj);
@@ -160,8 +174,8 @@ function addBookToLibrary(bookInfoObject) {
     deleteBtn.appendChild(trashIcon);
     
     bookDiv.append(bookInfoDiv, readStatusDiv, deleteBtn);
-    
-    shelf.appendChild(bookDiv);
+
+    shelf.prepend(bookDiv);
 
     numberOfBooks.innerText = shelf.children.length;
 
@@ -245,6 +259,15 @@ function showReadStatus(clickedBtn) {
 
 function removeBookDiv() {
     const bookTitle = this.parentNode.firstElementChild.firstElementChild.innerText;
+    const indexOfBookInArr = allTitles.indexOf(bookTitle);
+    allTitles.splice(indexOfBookInArr, 1);
+
+    const titlesArrFromLocStor = localStorage.getItem("allBooksTitle");
+    const turnJSONTitArrToJSTitArr = JSON.parse(titlesArrFromLocStor);
+    const indexOfParsedBookArr = turnJSONTitArrToJSTitArr.indexOf(bookTitle);
+    turnJSONTitArrToJSTitArr.splice(indexOfParsedBookArr, 1);
+    localStorage.setItem("allBooksTitle", JSON.stringify(turnJSONTitArrToJSTitArr));
+
     localStorage.removeItem(bookTitle);
     shelf.removeChild(this.parentNode);
     numberOfBooks.innerText = shelf.children.length;
@@ -281,6 +304,7 @@ function closeDelAllModalBox(objClicked) {
 
 function deleteAllBooks() {
     localStorage.clear();
+    allTitles = [];
     bookInfoObj = {};
     while(shelf.firstChild) {
         shelf.firstChild.remove();
