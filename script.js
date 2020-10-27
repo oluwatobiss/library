@@ -15,32 +15,70 @@ const cancelDelAllReqBtn = document.getElementById("cancel-del-all-request");
 const title = bookAddedInfo[0];
 const author = bookAddedInfo[1];
 const pages = bookAddedInfo[2];
-let read = "";
+let rStatus = "";
+let bookInfoObj = {};
 
+// localStorage.clear();
+
+window.addEventListener("load", checkLocalStorage);
 addReadState.forEach(i => i.addEventListener("click", logReadStatus));
-addBook.addEventListener("click", addBookToLibrary);
+addBook.addEventListener("click", createBookInfoObj);
 searchForm.addEventListener("keyup", searchForBook);
 deleteAllBtn.addEventListener("click", confirmDelAllRequest);
 window.addEventListener("click", closeDelAllModalBox);
 deleteAllOkayBtn.addEventListener("click", deleteAllBooks);
 
+function checkLocalStorage() {
+    if(localStorage.length > 0) {
+        for(let i = 0; i < localStorage.length; i++){
+            const keyOfBook = localStorage.key(i);
+            const bookFromLocalStorage = localStorage.getItem(keyOfBook);
+            const turnJSONBookToJSBook = JSON.parse(bookFromLocalStorage);
+            console.log(turnJSONBookToJSBook);
+            addBookToLibrary(turnJSONBookToJSBook);
+        }
+    }
+}
+
+function createBookInfoObj() {
+    const bookData = {
+        title: title.value,
+        author: author.value,
+        pages: pages.value,
+        rStatus: rStatus
+    }
+    for(const prop in bookData) {
+        if(bookData[prop] === "") {
+            alert("Please provide all the book's details");
+            return;
+        }
+    }
+    bookInfoObj = bookData;
+    console.log(bookInfoObj.title);
+    // Store book's data into the Local-Storage:
+    console.log(JSON.stringify(bookInfoObj));
+    localStorage.setItem(bookInfoObj.title, JSON.stringify(bookInfoObj));
+    // Add book to Library's shelf:
+    addBookToLibrary(bookInfoObj);
+}
+
 function logReadStatus() {
-    read = this.innerText.toLowerCase();
-    if(read === "not read") {
+    rStatus = this.innerText.toLowerCase();
+    if(rStatus === "not read") {
         addReadState[1].style.backgroundColor = "";
         addReadState[2].style.backgroundColor = "";
         addReadState[1].style.fontWeight = "";
         addReadState[2].style.fontWeight = "";
         this.style.backgroundColor = "#a6d608";
         this.style.fontWeight = "bold";
-    } else if(read === "reading") {
+    } else if(rStatus === "reading") {
         addReadState[0].style.backgroundColor = "";
         addReadState[2].style.backgroundColor = "";
         addReadState[0].style.fontWeight = "";
         addReadState[2].style.fontWeight = "";
         this.style.backgroundColor = "#9955bb";
         this.style.fontWeight = "bold";
-    } else if(read === "read") {
+    } else if(rStatus === "read") {
         addReadState[0].style.backgroundColor = "";
         addReadState[1].style.backgroundColor = "";
         addReadState[0].style.fontWeight = "";
@@ -50,24 +88,13 @@ function logReadStatus() {
     }
 }
 
-function addBookToLibrary() {
-    const formValues = [title.value, author.value, pages.value];
-
-    if(formValues.some(i => i === "")) {
-        alert("Please fill out all the book's details");
-        return;
-    }
-    
-    if(read === "") {
-        alert("Please confirm if you have read the book");
-        return;
-    }
-
+function addBookToLibrary(bookInfoObject) {
+    // Create Book's card for display on the shelf:
     const bookDiv = document.createElement("div");
 
-    if(read === "not read") {
+    if(bookInfoObject.rStatus === "not read") {
         bookDiv.setAttribute("class", "unread-logged-book");
-    } else if(read === "reading") {
+    } else if(bookInfoObject.rStatus === "reading") {
         bookDiv.setAttribute("class", "reading-logged-book");
     } else {
         bookDiv.setAttribute("class", "read-logged-book");
@@ -78,15 +105,15 @@ function addBookToLibrary() {
     
     const titlePEle = document.createElement("p");
     titlePEle.setAttribute("class", "logged-title");
-    titlePEle.append(formValues[0]);
+    titlePEle.append(bookInfoObject.title);
     
     const authorPEle = document.createElement("p");
     authorPEle.setAttribute("class", "logged-author");
-    authorPEle.append(formValues[1]);
+    authorPEle.append(bookInfoObject.author);
     
     const pagesPEle = document.createElement("p");
     pagesPEle.setAttribute("class", "logged-pages");
-    pagesPEle.append(`${formValues[2]} pages`);
+    pagesPEle.append(`${bookInfoObject.pages} pages`);
     
     bookInfoDiv.append(titlePEle, authorPEle, pagesPEle);
     
@@ -108,13 +135,15 @@ function addBookToLibrary() {
     readButton.classList.add("status-btn", "read");
     readButton.append("Read");
 
-    if(read === "not read") {
+    console.log(`I am ${rStatus}`);
+
+    if(bookInfoObject.rStatus === "not read") {
         notReadButton.style.backgroundColor = "#a6d608";
         notReadButton.style.fontWeight = "bold";
-    } else if(read === "reading") {
+    } else if(bookInfoObject.rStatus === "reading") {
         readingButton.style.backgroundColor = "#9955bb";
         readingButton.style.fontWeight = "bold";
-    } else if(read === "read") {
+    } else if(bookInfoObject.rStatus === "read") {
         readButton.style.backgroundColor = "#006400";
         readButton.style.fontWeight = "bold";
     }
@@ -133,7 +162,7 @@ function addBookToLibrary() {
     bookDiv.append(bookInfoDiv, readStatusDiv, deleteBtn);
     
     shelf.appendChild(bookDiv);
-    
+
     numberOfBooks.innerText = shelf.children.length;
 
     for(let i=0; i < bookReadStatusBtns.length; i++) {
@@ -144,7 +173,7 @@ function addBookToLibrary() {
         delBookBtn[i].addEventListener("click", removeBookDiv)
     }
 
-    read = "";
+    rStatus = "";
     title.value = "";
     author.value = "";
     pages.value = "";
@@ -154,11 +183,17 @@ function addBookToLibrary() {
     });
 }
 
-function showReadStatus() {
+function showReadStatus(clickedBtn) {
     const clickedReadState = this.innerText.toLowerCase();
     const bookReadStateBtns = this.parentNode.children;
     const bookBackground = this.parentNode.parentNode;
+    const bookInfoDiv = clickedBtn.composedPath()[2].children[0];
+    const bookTitle = bookInfoDiv.firstElementChild.innerText;
+    const bookFromLocalStorage = localStorage.getItem(bookTitle);
+    let bookFrLocStorReplacement = "";
+
     if(clickedReadState === "not read") {
+        changeBookStatToNotRead();
         bookReadStateBtns[1].style.backgroundColor = "";
         bookReadStateBtns[2].style.backgroundColor = "";
         bookReadStateBtns[1].style.fontWeight = "";
@@ -167,6 +202,7 @@ function showReadStatus() {
         this.style.backgroundColor = "#a6d608";
         this.style.fontWeight = "bold";
     } else if(clickedReadState === "reading") {
+        changeBookStatToReading();
         bookReadStateBtns[0].style.backgroundColor = "";
         bookReadStateBtns[2].style.backgroundColor = "";
         bookReadStateBtns[0].style.fontWeight = "";
@@ -175,6 +211,7 @@ function showReadStatus() {
         this.style.backgroundColor = "#9955bb";
         this.style.fontWeight = "bold";
     } else if(clickedReadState === "read") {
+        changeBookStatToRead();
         bookReadStateBtns[0].style.backgroundColor = "";
         bookReadStateBtns[1].style.backgroundColor = "";
         bookReadStateBtns[0].style.fontWeight = "";
@@ -183,9 +220,32 @@ function showReadStatus() {
         this.style.backgroundColor = "#006400";
         this.style.fontWeight = "bold";
     }
+
+    function changeBookStatToNotRead() {
+        if(bookFromLocalStorage.match(/(reading)|(read)/)) {
+            bookFrLocStorReplacement = bookFromLocalStorage.replace(/(reading)|(read)/, "not read");
+            localStorage.setItem(bookTitle, bookFrLocStorReplacement);
+        }
+    }
+
+    function changeBookStatToReading() {
+        if(bookFromLocalStorage.match(/(not read)|(read)/)) {
+            bookFrLocStorReplacement = bookFromLocalStorage.replace(/(not read)|(read)/, "reading");
+            localStorage.setItem(bookTitle, bookFrLocStorReplacement);
+        }
+    }
+
+    function changeBookStatToRead() {
+        if(bookFromLocalStorage.match(/(not read)|(reading)/)) {
+            bookFrLocStorReplacement = bookFromLocalStorage.replace(/(not read)|(reading)/, "read");
+            localStorage.setItem(bookTitle, bookFrLocStorReplacement);
+        }
+    }
 }
 
 function removeBookDiv() {
+    const bookTitle = this.parentNode.firstElementChild.firstElementChild.innerText;
+    localStorage.removeItem(bookTitle);
     shelf.removeChild(this.parentNode);
     numberOfBooks.innerText = shelf.children.length;
 }
@@ -220,6 +280,8 @@ function closeDelAllModalBox(objClicked) {
 }
 
 function deleteAllBooks() {
+    localStorage.clear();
+    bookInfoObj = {};
     while(shelf.firstChild) {
         shelf.firstChild.remove();
     }
