@@ -1,12 +1,12 @@
 const bookAddedInfo = document.querySelectorAll(".book-added-info");
-const addReadState = document.querySelectorAll(".add-read-state");
-const addBook = document.getElementById("add-book");
+const addReadStateBtns = document.querySelectorAll(".add-read-state");
+const addBookBtn = document.getElementById("add-book");
 const numberOfBooks = document.getElementById("numb-of-bks");
 const searchForm = document.getElementById("search");
 const deleteAllBtn = document.getElementById("delete-all");
 const shelf = document.getElementById("shelf");
-const delBookBtn = document.getElementsByClassName("delete-book");
 const bookReadStatusBtns = document.getElementsByClassName("status-btn");
+const delBookBtn = document.getElementsByClassName("delete-book");
 const deleteAllModalBg = document.getElementById("del-all-modal-bg");
 const closeModalBtn = document.getElementById("close-modal");
 const deleteAllConfirmationText = document.getElementById("del-all-conf-text");
@@ -15,15 +15,15 @@ const cancelDelAllReqBtn = document.getElementById("cancel-del-all-request");
 const title = bookAddedInfo[0];
 const author = bookAddedInfo[1];
 const pages = bookAddedInfo[2];
-let allTitles = [];
+let allTitlesArr = [];
 let bookInfoObj = {};
 let rStatus = "";
 
 // localStorage.clear();
 
 window.addEventListener("load", checkLocalStorage);
-addReadState.forEach(i => i.addEventListener("click", logReadStatus));
-addBook.addEventListener("click", createBookInfoObj);
+addReadStateBtns.forEach(i => i.addEventListener("click", logReadStatus));
+addBookBtn.addEventListener("click", createAndStoreBookInfoObj);
 searchForm.addEventListener("keyup", searchForBook);
 deleteAllBtn.addEventListener("click", confirmDelAllRequest);
 window.addEventListener("click", closeDelAllModalBox);
@@ -32,24 +32,21 @@ deleteAllOkayBtn.addEventListener("click", deleteAllBooks);
 function checkLocalStorage() {
     if(localStorage.length > 0) {
         const titlesArrFromLocStor = localStorage.getItem("allBooksTitle");
-        const turnJSONTitArrToJSTitArr = JSON.parse(titlesArrFromLocStor);
+        const turnJSONArrToJSArr = JSON.parse(titlesArrFromLocStor);
         
-        allTitles = [...turnJSONTitArrToJSTitArr];
+        allTitlesArr = [...turnJSONArrToJSArr];
         
-        turnJSONTitArrToJSTitArr.reverse();
+        turnJSONArrToJSArr.reverse();
 
-        console.log(turnJSONTitArrToJSTitArr);
-
-        for(let val of turnJSONTitArrToJSTitArr) {
-            const bookFromLocalStorage = localStorage.getItem(val);
-            const turnJSONBookToJSBook = JSON.parse(bookFromLocalStorage);
-            console.log(turnJSONBookToJSBook);
-            addBookToLibrary(turnJSONBookToJSBook);
+        for(const val of turnJSONArrToJSArr) {
+            const bookInfoFromLocalStorage = localStorage.getItem(val);
+            const turnJSONBookObjToJSBookObj = JSON.parse(bookInfoFromLocalStorage);
+            createAndAddBookToLib(turnJSONBookObjToJSBookObj);
         }
     }
 }
 
-function createBookInfoObj() {
+function createAndStoreBookInfoObj() {
     const bookData = {
         title: title.value,
         author: author.value,
@@ -63,47 +60,42 @@ function createBookInfoObj() {
         }
     }
 
+    // Store the book's data and title:
     bookInfoObj = bookData;
-    allTitles.unshift(bookInfoObj.title);
-
-    // Store book's data into the Local-Storage:
-    console.log(JSON.stringify(bookInfoObj));
-    console.log(JSON.stringify(allTitles));
-
-    localStorage.setItem("allBooksTitle", JSON.stringify(allTitles));
+    allTitlesArr.unshift(bookInfoObj.title);
+    localStorage.setItem("allBooksTitle", JSON.stringify(allTitlesArr));
     localStorage.setItem(bookInfoObj.title, JSON.stringify(bookInfoObj));
-    // Add book to Library's shelf:
-    addBookToLibrary(bookInfoObj);
+
+    createAndAddBookToLib(bookInfoObj);
 }
 
 function logReadStatus() {
     rStatus = this.innerText.toLowerCase();
     if(rStatus === "not read") {
-        addReadState[1].style.backgroundColor = "";
-        addReadState[2].style.backgroundColor = "";
-        addReadState[1].style.fontWeight = "";
-        addReadState[2].style.fontWeight = "";
+        addReadStateBtns[1].style.backgroundColor = "";
+        addReadStateBtns[2].style.backgroundColor = "";
+        addReadStateBtns[1].style.fontWeight = "";
+        addReadStateBtns[2].style.fontWeight = "";
         this.style.backgroundColor = "#a6d608";
         this.style.fontWeight = "bold";
     } else if(rStatus === "reading") {
-        addReadState[0].style.backgroundColor = "";
-        addReadState[2].style.backgroundColor = "";
-        addReadState[0].style.fontWeight = "";
-        addReadState[2].style.fontWeight = "";
+        addReadStateBtns[0].style.backgroundColor = "";
+        addReadStateBtns[2].style.backgroundColor = "";
+        addReadStateBtns[0].style.fontWeight = "";
+        addReadStateBtns[2].style.fontWeight = "";
         this.style.backgroundColor = "#9955bb";
         this.style.fontWeight = "bold";
     } else if(rStatus === "read") {
-        addReadState[0].style.backgroundColor = "";
-        addReadState[1].style.backgroundColor = "";
-        addReadState[0].style.fontWeight = "";
-        addReadState[1].style.fontWeight = "";
+        addReadStateBtns[0].style.backgroundColor = "";
+        addReadStateBtns[1].style.backgroundColor = "";
+        addReadStateBtns[0].style.fontWeight = "";
+        addReadStateBtns[1].style.fontWeight = "";
         this.style.backgroundColor = "#006400";
         this.style.fontWeight = "bold";
     }
 }
 
-function addBookToLibrary(bookInfoObject) {
-    // Create Book's card for display on the shelf:
+function createAndAddBookToLib(bookInfoObject) {
     const bookDiv = document.createElement("div");
 
     if(bookInfoObject.rStatus === "not read") {
@@ -149,8 +141,6 @@ function addBookToLibrary(bookInfoObject) {
     readButton.classList.add("status-btn", "read");
     readButton.append("Read");
 
-    console.log(`I am ${rStatus}`);
-
     if(bookInfoObject.rStatus === "not read") {
         notReadButton.style.backgroundColor = "#a6d608";
         notReadButton.style.fontWeight = "bold";
@@ -172,26 +162,25 @@ function addBookToLibrary(bookInfoObject) {
     trashIcon.setAttribute("class", "fas fa-trash-alt");
     
     deleteBtn.appendChild(trashIcon);
-    
     bookDiv.append(bookInfoDiv, readStatusDiv, deleteBtn);
-
     shelf.prepend(bookDiv);
+    updateOtherFacilities();
+}
 
-    numberOfBooks.innerText = shelf.children.length;
-
-    for(let i=0; i < bookReadStatusBtns.length; i++) {
+function updateOtherFacilities() {
+    for(let i = 0; i < bookReadStatusBtns.length; i++) {
         bookReadStatusBtns[i].addEventListener("click", showReadStatus)
     }
-
-    for(let i=0; i < delBookBtn.length; i++) {
+    for(let i = 0; i < delBookBtn.length; i++) {
         delBookBtn[i].addEventListener("click", removeBookDiv)
     }
 
+    numberOfBooks.innerText = shelf.children.length;
     rStatus = "";
     title.value = "";
     author.value = "";
     pages.value = "";
-    addReadState.forEach(i => {
+    addReadStateBtns.forEach(i => {
         i.style.backgroundColor = "";
         i.style.fontWeight = "";
     });
@@ -258,16 +247,19 @@ function showReadStatus(clickedBtn) {
 }
 
 function removeBookDiv() {
+    // Remove the book's title from the allTitlesArr array in this document:
     const bookTitle = this.parentNode.firstElementChild.firstElementChild.innerText;
-    const indexOfBookInArr = allTitles.indexOf(bookTitle);
-    allTitles.splice(indexOfBookInArr, 1);
+    const indexOfBookInArr = allTitlesArr.indexOf(bookTitle);
+    allTitlesArr.splice(indexOfBookInArr, 1);
 
+    // Remove the book's title from the allBooksTitle array in the localStorage:
     const titlesArrFromLocStor = localStorage.getItem("allBooksTitle");
-    const turnJSONTitArrToJSTitArr = JSON.parse(titlesArrFromLocStor);
-    const indexOfParsedBookArr = turnJSONTitArrToJSTitArr.indexOf(bookTitle);
-    turnJSONTitArrToJSTitArr.splice(indexOfParsedBookArr, 1);
-    localStorage.setItem("allBooksTitle", JSON.stringify(turnJSONTitArrToJSTitArr));
+    const turnJSONArrToJSArr = JSON.parse(titlesArrFromLocStor);
+    const indexOfParsedBookArr = turnJSONArrToJSArr.indexOf(bookTitle);
+    turnJSONArrToJSArr.splice(indexOfParsedBookArr, 1);
+    localStorage.setItem("allBooksTitle", JSON.stringify(turnJSONArrToJSArr));
 
+    // Remove the book's data from the localStorage and the library:
     localStorage.removeItem(bookTitle);
     shelf.removeChild(this.parentNode);
     numberOfBooks.innerText = shelf.children.length;
@@ -276,8 +268,9 @@ function removeBookDiv() {
 function searchForBook() {
     const searchValue = searchForm.value.toLowerCase();
     const books = shelf.children;
-    for(let i=0; i < books.length; i++) {
+    for(let i = 0; i < books.length; i++) {
         const titlePEle = books[i].querySelector(".logged-title");
+        // If the book's title matches the search value display the book -- else, hide it:
         if(titlePEle.innerText.toLowerCase().indexOf(searchValue) > -1) {
             books[i].style.display = "";
         } else {
@@ -304,7 +297,7 @@ function closeDelAllModalBox(objClicked) {
 
 function deleteAllBooks() {
     localStorage.clear();
-    allTitles = [];
+    allTitlesArr = [];
     bookInfoObj = {};
     while(shelf.firstChild) {
         shelf.firstChild.remove();
