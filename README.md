@@ -10,8 +10,3 @@ The library provides interfaces that make it easy to:
 * delete books.
 
 Feel free to [use the app here](https://oluwatobiss.github.io/library/).
-
-**Note:**
-
-This project is part of my [WEB DEVELOPMENT JavaScript](https://www.theodinproject.com/lessons/library) 
-training at The Odin Project.
