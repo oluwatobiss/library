@@ -1,18 +1,30 @@
+:root {
+    --brown-color: #a52a2a;
+    --prim-deer-color: #7e5735;
+    --sec-deer-color: #24190f;
+    --accent-deer-color: #48321e;
+    --saddle-brown-color: #8b4513;
+    --prim-black-color: #1a1a1a;
+    --sec-black-color: #cccccc;
+    --white-color: #ffffff;
+    --lime-green-color: #a6d608;
+    --dark-green-color: #006400;
+    --purple-color:  #9955bb;
+}
+
 @font-face {
     font-family: 'digital-7';
     src: url('assets/fonts/digital-7.regular.ttf');
 }
 
-html {
-    height: 100%;
-}
+html {height: 100%;}
 
 body {
     min-height: 100%;
     width: 100%;
     margin: 0;
     font-family: 'PT Sans', sans-serif;
-    background-color: #7e5735;
+    background-color: var(--prim-deer-color);
 }
 
 #del-all-modal-bg {
@@ -30,7 +42,7 @@ body {
 
 #del-all-modal-box {
     position: relative;
-    background-color: #ffffff;
+    background-color: var(--white-color);
     margin: 15% auto;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5), 0 6px 20px 0 rgba(0,0,0,0.3);
     padding: 0;
@@ -46,27 +58,25 @@ body {
 
 #del-all-modal-box header {
     padding: 0.5px 20px;
-    background-color: #7e5735;
-    color: #ffffff;
+    background-color: var(--prim-deer-color);
+    color: var(--white-color);
 }
 
 #close-modal {
-    color: #ffffff;
+    color: var(--white-color);
     float: right;
     font-size: 35px;
   }
 
 #close-modal:hover {
-  color: #24190f;
+  color: var(--sec-deer-color);
   cursor: pointer;
 }
 
-#del-all-modal-box-body {
-    padding: 2px 55px 28px;
-}
+#del-all-modal-box-body {padding: 2px 55px 28px;}
 
 .del-all-modal-btn {
-    border: 1px solid #7e5735;
+    border: 1px solid var(--prim-deer-color);
     border-radius: 2px;
     padding: 8px 20px;
     font-family: 'PT Sans', sans-serif;
@@ -75,27 +85,25 @@ body {
 
 #delete-all-okay {
     margin-right: 5px;
-    background-color: #7e5735;
-    color: #ffffff;
+    background-color: var(--prim-deer-color);
+    color: var(--white-color);
 }
 
-#delete-all-okay:hover {
-    background-color:  #24190f;
-}
+#delete-all-okay:hover {background-color:  var(--sec-deer-color);}
 
 #cancel-del-all-request {
-    background-color: #ffffff;
-    color: #7e5735;
+    background-color: var(--white-color);
+    color: var(--prim-deer-color);
 }
 
 #cancel-del-all-request:hover {
-    border: 1px solid #24190f;
-    color: #24190f;
+    border: 1px solid var(--sec-deer-color);
+    color: var(--sec-deer-color);
 }
 
 #del-all-modal-box footer {
     padding: 30px 16px;
-    background-color: #7e5735;
+    background-color: var(--prim-deer-color);
 }
 
 #shelf {
@@ -120,28 +128,26 @@ body {
 }
 
 .unread-logged-book {
-    background-color: #a6d608;
+    background-color: var(--lime-green-color);
     box-shadow: 3px 4px 15px;
 }
 
 .reading-logged-book {
-    background-color: #9955bb;
+    background-color: var(--purple-color);
     box-shadow: 3px 4px 15px;
 }
 
 .read-logged-book {
-    background-color: #006400;
+    background-color: var(--dark-green-color);
     box-shadow: 3px 4px 15px;
 }
 
-.book-info {
-    font-family: 'Source Serif Pro', serif;
-}
+.book-info {font-family: 'Source Serif Pro', serif;}
 
 .logged-title {
     margin: 0;
     font-size: 2rem;
-    color: #1a1a1a;
+    color: var(--prim-black-color);
 }
 
 .logged-author, .logged-pages {
@@ -158,18 +164,18 @@ body {
 .delete-book {
     width: 70%;
     height: 70%;
-    color: #1a1a1a;
-    background-color: #cccccc;
-    border: 1px groove #b3b3b3;
+    color: var(--prim-black-color);
+    background-color: var(--sec-black-color);
+    border: 1px groove  var(--sec-black-color);
     border-radius: 3px;
     margin: auto;
     font-size: 20px;
 }
 
 .delete-book:hover {
-    background-color: #a52a2a;
-    border: 1px groove #7a1f1f;
-    color: #cccccc;
+    background-color: var(--brown-color);
+    border: 1px groove var(--brown-color);
+    color: var(--white-color);
 }
 
 #control-panel {
@@ -179,7 +185,7 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    background-color:#24190f;
+    background-color:var(--sec-deer-color);
     padding: 10px 20px;
 }
 
@@ -190,13 +196,9 @@ h1 {
     text-align: center;
 }
 
-h1, legend, label {
-    color:#7e5735;
-}
+h1, legend, label {color:var(--prim-deer-color);}
 
-fieldset, legend {
-    border: 2px groove #48321e;
-}
+fieldset, legend {border: 2px groove var(--accent-deer-color);}
 
 fieldset, #book-title, #author, #number-of-pages, #add-book, #record-keeper, #search, #delete-all {
     box-sizing: border-box;
@@ -216,8 +218,8 @@ label {
 
 input {
     padding: 0 5px;
-    background-color: #e1cbb7;
-    color: #1a1a1a;
+    background-color: var(--white-color);
+    color: var(--prim-black-color);
     font-family: FontAwesome, 'PT Sans', sans-serif;
 }
 
@@ -227,17 +229,15 @@ input, #add-book, #delete-all {
     margin-bottom: 12px;
 }
 
-input:focus, button:focus {
-    outline:0;
-}
+input:focus, button:focus {outline:0;}
 
 button {
-    border: 3px groove #48321e;
+    border: 3px groove var(--accent-deer-color);
     padding: 3px;
-    background-color: #7e5735;
+    background-color: var(--prim-deer-color);
     font-family: 'PT Sans', sans-serif;
     font-size: 13px;
-    color: #120c08;
+    color: var(--sec-deer-color);
     cursor: pointer;
 }
 
@@ -252,13 +252,13 @@ button:active {
 }
 
 #add-book:hover {
-    background-color: #8b4513;
-    color: #fcf1e9;
+    background-color: var(--saddle-brown-color);
+    color: var(--white-color);
 }
 
 #delete-all:hover {
-	background-color: #a52a2a;
-	color: #faebeb;
+	background-color: var(--brown-color);
+	color: var(--white-color);
 }
 
 #read-status {
@@ -272,37 +272,33 @@ button:active {
     height: 60px;
 }
 
-.read {
-    border-radius: 50%;
-}
+.read {border-radius: 50%;}
 
-.reading {
-    border-radius: 50% 0;
-}
+.reading {border-radius: 50% 0;}
 
 .not-read:hover {
-    background-color: #a6d608;
-    color: #1a1a1a;
+    background-color: var(--lime-green-color);
+    color: var(--prim-black-color);
     font-weight: bold;
 }
 
 .reading:hover {
-    background-color: #9955bb;
-    color: #1a1a1a;
+    background-color: var(--purple-color);
+    color: var(--prim-black-color);
     font-weight: bold;
 }
 
 .read:hover {
-    background-color: #006400;
-    color: #1a1a1a;
+    background-color: var(--dark-green-color);
+    color: var(--prim-black-color);
     font-weight: bold;
 }
 
 #record-keeper {
     margin-top: 20px;
     margin-bottom: 15px;
-    background-color: rgb(203, 203, 203);
-    border: 2px solid rgb(63, 63, 63);
+    background-color: var(--sec-black-color);
+    border: 2px solid var(--prim-black-color);
 }
 
 #total-books {
@@ -328,15 +324,11 @@ button:active {
     font-size: 3rem;
 }
 
-footer {
-	text-align: center;
-}
+footer {text-align: center;}
 
 footer a {
     text-decoration: none;
-    color:#7e5735;
+    color:var(--prim-deer-color);
 }
 
-footer a:hover {
-    color: #8b4513;
-}
+footer a:hover {color: var(--saddle-brown-color);}
