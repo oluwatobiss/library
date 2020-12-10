@@ -17,7 +17,6 @@ const title = bookAddedInfo[0];
 const author = bookAddedInfo[1];
 const pages = bookAddedInfo[2];
 let allTitlesArr = [];
-let bookInfoObj = {};
 let rStatus = "";
 
 // localStorage.clear();
@@ -45,22 +44,23 @@ function checkLocalStorage() {
 }
 
 function createAndStoreBookInfoObj() {
-    const bookData = {
-        title: title.value,
-        author: author.value,
-        pages: pages.value,
-        rStatus: rStatus
+    class BookData {
+        title = title.value;
+        author = author.value;
+        pages = pages.value;
+        rStatus = rStatus;
     }
+    
+    const bookInfoObj = new BookData;
 
-    for (const prop in bookData) {
-        if (bookData[prop] === "") {
+    for (const prop in bookInfoObj) {
+        if (bookInfoObj[prop] === "") {
             alert("Please provide all the book's details");
             return;
         }
     }
 
     // Store the book's data and title:
-    bookInfoObj = bookData;
     allTitlesArr.unshift(bookInfoObj.title);
     localStorage.setItem("allBooksTitle", JSON.stringify(allTitlesArr));
     localStorage.setItem(bookInfoObj.title, JSON.stringify(bookInfoObj));
@@ -70,21 +70,25 @@ function createAndStoreBookInfoObj() {
 
 function logReadStatus() {
     rStatus = this.innerText.toLowerCase();
-    if (rStatus === "not read") {
-        removeReadingStyle();
-        removeReadStyle();
-        this.style.backgroundColor = "#a6d608";
-        this.style.fontWeight = "bold";
-    } else if (rStatus === "reading") {
-        removeNotReadStyle();
-        removeReadStyle();
-        this.style.backgroundColor = "#9955bb";
-        this.style.fontWeight = "bold";
-    } else if (rStatus === "read") {
-        removeNotReadStyle();
-        removeReadingStyle();
-        this.style.backgroundColor = "#006400";
-        this.style.fontWeight = "bold";
+
+    switch (rStatus) {
+        case "not read":
+            removeReadingStyle();
+            removeReadStyle();
+            this.style.backgroundColor = "#a6d608";
+            this.style.fontWeight = "bold";
+            break;
+        case "reading":
+            removeNotReadStyle();
+            removeReadStyle();
+            this.style.backgroundColor = "#9955bb";
+            this.style.fontWeight = "bold";
+            break;
+        case "read":
+            removeNotReadStyle();
+            removeReadingStyle();
+            this.style.backgroundColor = "#006400";
+            this.style.fontWeight = "bold";
     }
 
     function removeNotReadStyle() {
@@ -145,15 +149,18 @@ function createAndAddBookToLib(bookInfoObject) {
     readButton.classList.add("status-btn", "read");
     readButton.append("Read");
 
-    if (bookInfoObject.rStatus === "not read") {
-        notReadButton.style.backgroundColor = "#a6d608";
-        notReadButton.style.fontWeight = "bold";
-    } else if (bookInfoObject.rStatus === "reading") {
-        readingButton.style.backgroundColor = "#9955bb";
-        readingButton.style.fontWeight = "bold";
-    } else if (bookInfoObject.rStatus === "read") {
-        readButton.style.backgroundColor = "#006400";
-        readButton.style.fontWeight = "bold";
+    switch (bookInfoObject.rStatus) {
+        case "not read":
+            notReadButton.style.backgroundColor = "#a6d608";
+            notReadButton.style.fontWeight = "bold";
+            break;
+        case "reading":
+            readingButton.style.backgroundColor = "#9955bb";
+            readingButton.style.fontWeight = "bold";
+            break;
+        case "read":
+            readButton.style.backgroundColor = "#006400";
+            readButton.style.fontWeight = "bold";
     }
     
     readStatusDiv.append(notReadButton, readingButton, readButton);
@@ -198,27 +205,30 @@ function showReadStatus(clickedBtn) {
     const bookFromLocalStorage = localStorage.getItem(bookTitle);
     let bookFrLocStorReplacement = "";
 
-    if (clickedReadState === "not read") {
-        changeBookStatToNotRead();
-        removeReadingStyle();
-        removeReadStyle();
-        bookBackground.style.backgroundColor = "#a6d608";
-        this.style.backgroundColor = "#a6d608";
-        this.style.fontWeight = "bold";
-    } else if (clickedReadState === "reading") {
-        changeBookStatToReading();
-        removeNotReadStyle();
-        removeReadStyle();
-        bookBackground.style.backgroundColor = "#9955bb";
-        this.style.backgroundColor = "#9955bb";
-        this.style.fontWeight = "bold";
-    } else if (clickedReadState === "read") {
-        changeBookStatToRead();
-        removeNotReadStyle();
-        removeReadingStyle();
-        bookBackground.style.backgroundColor = "#006400";
-        this.style.backgroundColor = "#006400";
-        this.style.fontWeight = "bold";
+    switch (clickedReadState) {
+        case "not read":
+            changeBookStatToNotRead();
+            removeReadingStyle();
+            removeReadStyle();
+            bookBackground.style.backgroundColor = "#a6d608";
+            this.style.backgroundColor = "#a6d608";
+            this.style.fontWeight = "bold";
+            break;
+        case "reading":
+            changeBookStatToReading();
+            removeNotReadStyle();
+            removeReadStyle();
+            bookBackground.style.backgroundColor = "#9955bb";
+            this.style.backgroundColor = "#9955bb";
+            this.style.fontWeight = "bold";
+            break;
+        case "read":
+            changeBookStatToRead();
+            removeNotReadStyle();
+            removeReadingStyle();
+            bookBackground.style.backgroundColor = "#006400";
+            this.style.backgroundColor = "#006400";
+            this.style.fontWeight = "bold";
     }
 
     function changeBookStatToNotRead() {
@@ -304,7 +314,6 @@ function closeDelAllModalBox(objClicked) {
 function deleteAllBooks() {
     localStorage.clear();
     allTitlesArr = [];
-    bookInfoObj = {};
     while (shelf.firstChild) shelf.firstChild.remove();
     numberOfBooks.innerText = shelf.children.length;
     deleteAllModalBg.style.display = "none";
