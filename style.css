@@ -324,6 +324,12 @@ button:active {
     font-size: 3rem;
 }
 
+#search {
+    background: white url('assets/toolbar_find.png') no-repeat 2px center;
+    background-size: 8.5%;
+    padding-left: 28px;
+}
+
 footer {text-align: center;}
 
 footer a {
