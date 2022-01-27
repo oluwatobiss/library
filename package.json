@@ -1,0 +1,23 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "This Library App provides users a handy way to record books they want to \r read, the ones they are currently reading, and those they have read.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oluwatobiss/library.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oluwatobiss/library/issues"
+  },
+  "homepage": "https://github.com/oluwatobiss/library#readme",
+  "dependencies": {
+    "firebase": "^9.6.4"
+  }
+}
