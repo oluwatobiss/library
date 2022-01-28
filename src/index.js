@@ -1,3 +1,6 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from 'firebase/app';
+
 const bookInfoForm = document.getElementById("book-info-form");
 const bookAddedInfo = document.querySelectorAll(".book-added-info");
 const addReadStateBtns = document.querySelectorAll(".add-read-state");
@@ -20,6 +23,18 @@ let allTitlesArr = [];
 let rStatus = "";
 
 // localStorage.clear();
+
+// TODO: Replace the following with your app's Firebase project configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDcJQK8RtiC3ZU10aBw-RqfnIIJ6X5DaV8",
+    authDomain: "library-app-262e5.firebaseapp.com",
+    projectId: "library-app-262e5",
+    storageBucket: "library-app-262e5.appspot.com",
+    messagingSenderId: "463063201004",
+    appId: "1:463063201004:web:ec5d5964fa4ac8995961c9"
+};
+
+const app = initializeApp(firebaseConfig);
 
 window.addEventListener("load", checkLocalStorage);
 addReadStateBtns.forEach(i => i.addEventListener("click", logReadStatus));

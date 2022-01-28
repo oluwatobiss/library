@@ -4,7 +4,8 @@
   "description": "This Library App provides users a handy way to record books they want to \r read, the ones they are currently reading, and those they have read.",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=development"
   },
   "repository": {
     "type": "git",
@@ -19,5 +20,9 @@
   "homepage": "https://github.com/oluwatobiss/library#readme",
   "dependencies": {
     "firebase": "^9.6.4"
+  },
+  "devDependencies": {
+    "webpack": "^5.67.0",
+    "webpack-cli": "^4.9.2"
   }
 }
