@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, doc, addDoc, getDocs, deleteDoc, updateDoc } from "firebase/firestore";
 
 const bookInfoForm = document.getElementById("book-info-form");
 const bookAddedInfo = document.querySelectorAll(".book-added-info");
@@ -35,8 +36,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore();
 
-window.addEventListener("load", checkLocalStorage);
+window.addEventListener("load", getBooksFromFirestore);
 addReadStateBtns.forEach(i => i.addEventListener("click", logReadStatus));
 addBookBtn.addEventListener("click", createAndStoreBookInfoObj);
 searchForm.addEventListener("keyup", searchForBook);
@@ -44,29 +46,38 @@ deleteAllBtn.addEventListener("click", confirmDelAllRequest);
 window.addEventListener("click", closeDelAllModalBox);
 deleteAllOkayBtn.addEventListener("click", deleteAllBooks);
 
-function checkLocalStorage() {
-    if (localStorage.length > 0) {
-        const titlesArrFromLocStor = localStorage.getItem("allBooksTitle");
-        const turnJSONArrToJSArr = JSON.parse(titlesArrFromLocStor);
+async function getBooksFromFirestore() {
+    let allBooksTitleObj = null;
+    const querySnapshot = await getDocs(collection(db, "allBooksTitle"));
+
+    querySnapshot.forEach((doc) => {
+        allBooksTitleObj = doc.data();
+    });
+
+    if (allBooksTitleObj) {
+        const turnJSONArrToJSArr = JSON.parse(allBooksTitleObj.allTitlesArr);
         allTitlesArr = [...turnJSONArrToJSArr];
         turnJSONArrToJSArr.reverse();
         for (const val of turnJSONArrToJSArr) {
-            const bookInfoFromLocalStorage = localStorage.getItem(val);
-            const turnJSONBookObjToJSBookObj = JSON.parse(bookInfoFromLocalStorage);
-            createAndAddBookToLib(turnJSONBookObjToJSBookObj);
+            let bookInfoObjFromFirestore = null;
+            const querySnapshot = await getDocs(collection(db, val));
+    
+            querySnapshot.forEach((doc) => {
+                bookInfoObjFromFirestore = doc.data();
+            });
+    
+            createAndAddBookToLib(bookInfoObjFromFirestore);
         }
     }
 }
 
-function createAndStoreBookInfoObj() {
-    class BookData {
-        title = title.value;
-        author = author.value;
-        pages = pages.value;
-        rStatus = rStatus;
-    }
-    
-    const bookInfoObj = new BookData;
+async function createAndStoreBookInfoObj() {    
+    const bookInfoObj = {
+        title: title.value,
+        author: author.value,
+        pages: pages.value,
+        rStatus: rStatus,
+    };
 
     for (const prop in bookInfoObj) {
         if (bookInfoObj[prop] === "") {
@@ -75,10 +86,30 @@ function createAndStoreBookInfoObj() {
         }
     }
 
-    // Store the book's data and title:
+    // Store the book's title to this document's allTitlesArr array:
     allTitlesArr.unshift(bookInfoObj.title);
-    localStorage.setItem("allBooksTitle", JSON.stringify(allTitlesArr));
-    localStorage.setItem(bookInfoObj.title, JSON.stringify(bookInfoObj));
+
+    // Replace Firestore's allTitlesArr array with this document's own:
+    try {
+        let currAllTitlesArrID = null;
+        const querySnapshot = await getDocs(collection(db, "allBooksTitle"));
+        
+        querySnapshot.forEach((doc) => { currAllTitlesArrID = doc.id; });
+        if (currAllTitlesArrID) { await deleteDoc(doc(db, "allBooksTitle", currAllTitlesArrID)); }
+
+        const docRef = await addDoc(collection(db, "allBooksTitle"), { allTitlesArr: JSON.stringify(allTitlesArr) });
+        console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+
+    // Add the bookInfoObj to the Firestore database:
+    try {
+        const docRef = await addDoc(collection(db, bookInfoObj.title), bookInfoObj);
+        console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
 
     createAndAddBookToLib(bookInfoObj);
 }
@@ -211,14 +242,18 @@ function updateOtherFacilities() {
     });
 }
 
-function showReadStatus(clickedBtn) {
+async function showReadStatus(clickedBtn) {
     const clickedReadState = this.innerText.toLowerCase();
     const bookReadStateBtns = this.parentNode.children;
     const bookBackground = this.parentNode.parentNode;
     const bookInfoDiv = clickedBtn.composedPath()[2].children[0];
     const bookTitle = bookInfoDiv.firstElementChild.innerText;
-    const bookFromLocalStorage = localStorage.getItem(bookTitle);
-    let bookFrLocStorReplacement = "";
+    const querySnapshot = await getDocs(collection(db, bookTitle));
+    let bookInfoObjFromFirestore = null;
+
+    querySnapshot.forEach((doc) => {
+        bookInfoObjFromFirestore = { ...doc.data(), id: doc.id };
+    });
 
     switch (clickedReadState) {
         case "not read":
@@ -246,22 +281,19 @@ function showReadStatus(clickedBtn) {
             this.style.fontWeight = "bold";
     }
 
-    function changeBookStatToNotRead() {
-        if (bookFromLocalStorage.match(/(reading)|(read)/)) {
-            bookFrLocStorReplacement = bookFromLocalStorage.replace(/(reading)|(read)/, "not read");
-            localStorage.setItem(bookTitle, bookFrLocStorReplacement);
+    async function changeBookStatToNotRead() {
+        if (bookInfoObjFromFirestore.rStatus.match(/(reading)|(read)/)) {
+            await updateDoc(doc(db, bookTitle, bookInfoObjFromFirestore.id), { rStatus: "not read" });
         }
     }
-    function changeBookStatToReading() {
-        if (bookFromLocalStorage.match(/(not read)|(read)/)) {
-            bookFrLocStorReplacement = bookFromLocalStorage.replace(/(not read)|(read)/, "reading");
-            localStorage.setItem(bookTitle, bookFrLocStorReplacement);
+    async function changeBookStatToReading() {
+        if (bookInfoObjFromFirestore.rStatus.match(/(not read)|(read)/)) {
+            await updateDoc(doc(db, bookTitle, bookInfoObjFromFirestore.id), { rStatus: "reading" });
         }
     }
-    function changeBookStatToRead() {
-        if (bookFromLocalStorage.match(/(not read)|(reading)/)) {
-            bookFrLocStorReplacement = bookFromLocalStorage.replace(/(not read)|(reading)/, "read");
-            localStorage.setItem(bookTitle, bookFrLocStorReplacement);
+    async function changeBookStatToRead() {
+        if (bookInfoObjFromFirestore.rStatus.match(/(not read)|(reading)/)) {
+            await updateDoc(doc(db, bookTitle, bookInfoObjFromFirestore.id), { rStatus: "read" });
         }
     }
 
@@ -279,21 +311,35 @@ function showReadStatus(clickedBtn) {
     }
 }
 
-function removeBookDiv() {
+async function removeBookDiv() {
     // Remove the book's title from the allTitlesArr array in this document:
     const bookTitle = this.parentNode.firstElementChild.firstElementChild.innerText;
     const indexOfBookInArr = allTitlesArr.indexOf(bookTitle);
     allTitlesArr.splice(indexOfBookInArr, 1);
+    
+    // Remove the book's title from the allBooksTitle array in the Firestore database:
+    let allBooksTitleObjFromFirestore = null;
+    const allBooksTitleSnapshot = await getDocs(collection(db, "allBooksTitle"));
 
-    // Remove the book's title from the allBooksTitle array in the localStorage:
-    const titlesArrFromLocStor = localStorage.getItem("allBooksTitle");
-    const turnJSONArrToJSArr = JSON.parse(titlesArrFromLocStor);
+    allBooksTitleSnapshot.forEach((doc) => {
+        allBooksTitleObjFromFirestore = { ...doc.data(), id: doc.id };
+    });
+    
+    const turnJSONArrToJSArr = JSON.parse(allBooksTitleObjFromFirestore.allTitlesArr);
     const indexOfParsedBookArr = turnJSONArrToJSArr.indexOf(bookTitle);
     turnJSONArrToJSArr.splice(indexOfParsedBookArr, 1);
-    localStorage.setItem("allBooksTitle", JSON.stringify(turnJSONArrToJSArr));
 
-    // Remove the book's data from the localStorage and the library:
-    localStorage.removeItem(bookTitle);
+    await updateDoc(doc(db, "allBooksTitle", allBooksTitleObjFromFirestore.id), { allTitlesArr: JSON.stringify(turnJSONArrToJSArr) });
+    
+    // Remove the book's data from the Firestore and the library:
+    let bookID = null;
+    const bookTitleSnapshot = await getDocs(collection(db, bookTitle));
+    bookTitleSnapshot.forEach((doc) => {
+        bookID = doc.id;
+    });
+
+    await deleteDoc(doc(db, bookTitle, bookID));
+
     shelf.removeChild(this.parentNode);
     numberOfBooks.innerText = shelf.children.length;
 }
@@ -326,8 +372,25 @@ function closeDelAllModalBox(objClicked) {
     }
 }
 
-function deleteAllBooks() {
-    localStorage.clear();
+async function deleteAllBooks() {
+    allTitlesArr.forEach(async (bookTitle) => {
+        let bookID = null;
+        const bookTitleSnapshot = await getDocs(collection(db, bookTitle));
+        bookTitleSnapshot.forEach((doc) => {
+            bookID = doc.id;
+        });
+    
+        await deleteDoc(doc(db, bookTitle, bookID));
+    })
+
+    let allBooksTitleObjID = null;
+    const allBooksTitleSnapshot = await getDocs(collection(db, "allBooksTitle"));
+    allBooksTitleSnapshot.forEach((doc) => {
+        allBooksTitleObjID = doc.id;
+    });
+    
+    await deleteDoc(doc(db, "allBooksTitle", allBooksTitleObjID));
+
     allTitlesArr = [];
     while (shelf.firstChild) shelf.firstChild.remove();
     numberOfBooks.innerText = shelf.children.length;
