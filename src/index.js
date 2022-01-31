@@ -1,6 +1,7 @@
-// Import the functions you need from the SDKs you need
+import "./style.css";
+import '@fortawesome/fontawesome-free/js/all'
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, doc, addDoc, getDocs, deleteDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, getDocs, deleteDoc, updateDoc, query, where } from "firebase/firestore";
 
 const bookInfoForm = document.getElementById("book-info-form");
 const bookAddedInfo = document.querySelectorAll(".book-added-info");
@@ -23,9 +24,6 @@ const pages = bookAddedInfo[2];
 let allTitlesArr = [];
 let rStatus = "";
 
-// localStorage.clear();
-
-// TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDcJQK8RtiC3ZU10aBw-RqfnIIJ6X5DaV8",
     authDomain: "library-app-262e5.firebaseapp.com",
@@ -36,7 +34,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore();
+const db = getFirestore(app);
 
 window.addEventListener("load", getBooksFromFirestore);
 addReadStateBtns.forEach(i => i.addEventListener("click", logReadStatus));
@@ -49,24 +47,23 @@ deleteAllOkayBtn.addEventListener("click", deleteAllBooks);
 async function getBooksFromFirestore() {
     let allBooksTitleObj = null;
     const querySnapshot = await getDocs(collection(db, "allBooksTitle"));
-
-    querySnapshot.forEach((doc) => {
-        allBooksTitleObj = doc.data();
-    });
+    querySnapshot.forEach((doc) => { allBooksTitleObj = doc.data(); });
 
     if (allBooksTitleObj) {
         const turnJSONArrToJSArr = JSON.parse(allBooksTitleObj.allTitlesArr);
         allTitlesArr = [...turnJSONArrToJSArr];
         turnJSONArrToJSArr.reverse();
+
+        let books = [];
+        const booksSnapshot = await getDocs(collection(db, "books"));
+        booksSnapshot.forEach((doc) => { books.push({ ...doc.data() }); });
+
         for (const val of turnJSONArrToJSArr) {
-            let bookInfoObjFromFirestore = null;
-            const querySnapshot = await getDocs(collection(db, val));
-    
-            querySnapshot.forEach((doc) => {
-                bookInfoObjFromFirestore = doc.data();
-            });
-    
-            createAndAddBookToLib(bookInfoObjFromFirestore);
+            books.forEach(async (book) => {
+                if (val === book.title) {
+                    createAndAddBookToLib(book);
+                }
+            })
         }
     }
 }
@@ -97,16 +94,14 @@ async function createAndStoreBookInfoObj() {
         querySnapshot.forEach((doc) => { currAllTitlesArrID = doc.id; });
         if (currAllTitlesArrID) { await deleteDoc(doc(db, "allBooksTitle", currAllTitlesArrID)); }
 
-        const docRef = await addDoc(collection(db, "allBooksTitle"), { allTitlesArr: JSON.stringify(allTitlesArr) });
-        console.log("Document written with ID: ", docRef.id);
+        await addDoc(collection(db, "allBooksTitle"), { allTitlesArr: JSON.stringify(allTitlesArr) });
     } catch (e) {
         console.error("Error adding document: ", e);
     }
 
     // Add the bookInfoObj to the Firestore database:
     try {
-        const docRef = await addDoc(collection(db, bookInfoObj.title), bookInfoObj);
-        console.log("Document written with ID: ", docRef.id);
+        await addDoc(collection(db, "books"), bookInfoObj);
     } catch (e) {
         console.error("Error adding document: ", e);
     }
@@ -248,12 +243,10 @@ async function showReadStatus(clickedBtn) {
     const bookBackground = this.parentNode.parentNode;
     const bookInfoDiv = clickedBtn.composedPath()[2].children[0];
     const bookTitle = bookInfoDiv.firstElementChild.innerText;
-    const querySnapshot = await getDocs(collection(db, bookTitle));
+    const bookSnapshot = await getDocs(query(collection(db, "books"), where("title", "==", bookTitle)));
     let bookInfoObjFromFirestore = null;
 
-    querySnapshot.forEach((doc) => {
-        bookInfoObjFromFirestore = { ...doc.data(), id: doc.id };
-    });
+    bookSnapshot.forEach((doc) => { bookInfoObjFromFirestore = { ...doc.data(), id: doc.id }; });
 
     switch (clickedReadState) {
         case "not read":
@@ -283,17 +276,17 @@ async function showReadStatus(clickedBtn) {
 
     async function changeBookStatToNotRead() {
         if (bookInfoObjFromFirestore.rStatus.match(/(reading)|(read)/)) {
-            await updateDoc(doc(db, bookTitle, bookInfoObjFromFirestore.id), { rStatus: "not read" });
+            await updateDoc(doc(db, "books", bookInfoObjFromFirestore.id), { rStatus: "not read" });
         }
     }
     async function changeBookStatToReading() {
         if (bookInfoObjFromFirestore.rStatus.match(/(not read)|(read)/)) {
-            await updateDoc(doc(db, bookTitle, bookInfoObjFromFirestore.id), { rStatus: "reading" });
+            await updateDoc(doc(db, "books", bookInfoObjFromFirestore.id), { rStatus: "reading" });
         }
     }
     async function changeBookStatToRead() {
         if (bookInfoObjFromFirestore.rStatus.match(/(not read)|(reading)/)) {
-            await updateDoc(doc(db, bookTitle, bookInfoObjFromFirestore.id), { rStatus: "read" });
+            await updateDoc(doc(db, "books", bookInfoObjFromFirestore.id), { rStatus: "read" });
         }
     }
 
@@ -331,15 +324,13 @@ async function removeBookDiv() {
 
     await updateDoc(doc(db, "allBooksTitle", allBooksTitleObjFromFirestore.id), { allTitlesArr: JSON.stringify(turnJSONArrToJSArr) });
     
-    // Remove the book's data from the Firestore and the library:
+    // Remove the book's data from the Firestore database:
     let bookID = null;
-    const bookTitleSnapshot = await getDocs(collection(db, bookTitle));
-    bookTitleSnapshot.forEach((doc) => {
-        bookID = doc.id;
-    });
+    const bookTitleSnapshot = await getDocs(query(collection(db, "books"), where("title", "==", bookTitle)));
+    bookTitleSnapshot.forEach((doc) => { bookID = doc.id; });
+    await deleteDoc(doc(db, "books", bookID));
 
-    await deleteDoc(doc(db, bookTitle, bookID));
-
+    // Remove the book's data from the library:
     shelf.removeChild(this.parentNode);
     numberOfBooks.innerText = shelf.children.length;
 }
@@ -373,23 +364,19 @@ function closeDelAllModalBox(objClicked) {
 }
 
 async function deleteAllBooks() {
-    allTitlesArr.forEach(async (bookTitle) => {
-        let bookID = null;
-        const bookTitleSnapshot = await getDocs(collection(db, bookTitle));
-        bookTitleSnapshot.forEach((doc) => {
-            bookID = doc.id;
-        });
-    
-        await deleteDoc(doc(db, bookTitle, bookID));
-    })
+    let bookObjID = null;
+    const booksSnapshot = await getDocs(collection(db, "books"));
+    booksSnapshot.forEach(async (book) => {
+        bookObjID = book.id;
+        await deleteDoc(doc(db, "books", bookObjID));
+    });
 
     let allBooksTitleObjID = null;
     const allBooksTitleSnapshot = await getDocs(collection(db, "allBooksTitle"));
-    allBooksTitleSnapshot.forEach((doc) => {
-        allBooksTitleObjID = doc.id;
+    allBooksTitleSnapshot.forEach(async (obj) => {
+        allBooksTitleObjID = obj.id;
+        await deleteDoc(doc(db, "allBooksTitle", allBooksTitleObjID));
     });
-    
-    await deleteDoc(doc(db, "allBooksTitle", allBooksTitleObjID));
 
     allTitlesArr = [];
     while (shelf.firstChild) shelf.firstChild.remove();
